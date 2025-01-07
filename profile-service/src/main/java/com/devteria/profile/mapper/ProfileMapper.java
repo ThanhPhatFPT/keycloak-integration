@@ -6,6 +6,7 @@ import com.devteria.profile.entity.Profile;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
+
 public interface ProfileMapper {
     Profile toProfile(RegistrationRequest request);
     ProfileResponse toProfileResponse(Profile profile);

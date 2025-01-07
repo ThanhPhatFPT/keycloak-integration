@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(name = "identity-client", url = "${idp.url}")
 public interface IdentityClient {
-    @PostMapping(value = "/realms/devteria/protocol/openid-connect/token",
+    @PostMapping(value = "/realms/KeyClockRealm/protocol/openid-connect/token",
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     TokenExchangeResponse exchangeToken(@QueryMap TokenExchangeParam param);
 
-    @PostMapping(value = "/admin/realms/devteria/users",
+    @PostMapping(value = "/admin/realms/KeyClockRealm/users",
             consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<?> createUser(
             @RequestHeader("authorization") String token,
