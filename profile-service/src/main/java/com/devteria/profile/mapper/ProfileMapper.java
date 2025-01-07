@@ -7,6 +7,7 @@ import com.devteria.profile.dto.response.ProfileResponse;
 import com.devteria.profile.entity.Profile;
 
 @Mapper(componentModel = "spring")
+
 public interface ProfileMapper {
     Profile toProfile(RegistrationRequest request);
 
