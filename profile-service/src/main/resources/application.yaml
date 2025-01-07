@@ -17,5 +17,5 @@ spring:
 
 idp:
   url: http://localhost:8180
-  client-id: devteria_app
-  client-secret: jJ1gdXhJbeOXMnqe1A1jnZVmc3WKCTx3
+  client-id: KeyClockRealm_app_id
+  client-secret: 6dIZy5fopTn61B0FrFFRsS1TOV50TLWp
