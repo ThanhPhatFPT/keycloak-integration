@@ -13,9 +13,12 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8180/realms/devteria
+          issuer-uri: http://localhost:8180/realms/KeyClockRealm
 
 idp:
   url: http://localhost:8180
   client-id: KeyClockRealm_app_id
   client-secret: 6dIZy5fopTn61B0FrFFRsS1TOV50TLWp
+
+
+

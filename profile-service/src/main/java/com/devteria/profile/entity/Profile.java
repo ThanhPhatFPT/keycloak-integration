@@ -30,4 +30,8 @@ public class Profile {
     String firstName;
     String lastName;
     LocalDate dob;
+
+    // Thêm trường enabled để xác thực trạng thái tài khoản
+    Boolean enabled = true;
+
 }

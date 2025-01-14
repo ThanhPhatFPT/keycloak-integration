@@ -22,4 +22,9 @@ public interface IdentityClient {
     ResponseEntity<?> createUser(
             @RequestHeader("authorization") String token,
             @RequestBody UserCreationParam param);
+
+
+//    @PostMapping(value = "/realms/KeyClockRealm/protocol/openid-connect/token",
+//            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+//    TokenExchangeResponse exchangeToken(@QueryMap TokenExchangeResponse param);
 }

@@ -2,6 +2,9 @@ package com.devteria.profile.service;
 
 import java.util.List;
 
+import com.devteria.profile.dto.identity.TokenExchangeResponse;
+import com.devteria.profile.dto.response.LoginResponse;
+import com.devteria.profile.entity.Profile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -96,4 +99,121 @@ public class ProfileService {
         String[] splitedStr = location.split("/");
         return splitedStr[splitedStr.length - 1];
     }
+
+
+//    public LoginResponse authenticateUser(String username, String password) {
+//        // Kiểm tra người dùng trong cơ sở dữ liệu
+//        Profile profile = profileRepository.findByUsername(username);
+//        if (profile == null || !profile.getEnabled()) {
+//            throw new IllegalArgumentException("User not found or disabled");
+//        }
+//
+//        // Xác thực với Keycloak (hoặc hệ thống của bạn)
+//        TokenExchangeParam param = TokenExchangeParam.builder()
+//                .grant_type("password")
+//                .client_id("KeyClockRealm_app_id")
+//                .client_secret("6dIZy5fopTn61B0FrFFRsS1TOV50TLWp")
+//                .username(username)
+//                .password(password)
+//                .scope("openid")
+//                .build();
+//
+//        // Thực hiện yêu cầu token từ Keycloak
+//        TokenExchangeResponse tokenResponse = identityClient.exchangeToken(param);
+//
+//        // Kiểm tra nếu không có token, trả về lỗi
+//        if (tokenResponse == null || tokenResponse.getAccessToken() == null) {
+//            throw new IllegalArgumentException("Invalid credentials or token exchange failed");
+//        }
+//
+//        // Lấy token từ response
+//        String token = tokenResponse.getAccessToken();
+//
+//        // Trả về Profile cùng với token trong LoginResponse
+//        return new LoginResponse(profile, token);
+//    }
+
+
+    public String authenticateUser(String username, String password) {
+        // Kiểm tra người dùng trong cơ sở dữ liệu
+        Profile profile = profileRepository.findByUsername(username);
+        if (profile == null || !profile.getEnabled()) {
+            throw new IllegalArgumentException("User not found or disabled");
+        }
+
+        // Xác thực với Keycloak
+        TokenExchangeParam param = TokenExchangeParam.builder()
+                .grant_type("password")
+                .client_id("KeyClockRealm_app_id")
+                .client_secret("6dIZy5fopTn61B0FrFFRsS1TOV50TLWp")
+                .username(username)
+                .password(password)
+                .scope("openid")
+                .build();
+
+        // Thực hiện yêu cầu token từ Keycloak
+        TokenExchangeResponse tokenResponse = identityClient.exchangeToken(param);
+
+        // Kiểm tra nếu không có token, trả về lỗi
+        if (tokenResponse == null || tokenResponse.getAccessToken() == null) {
+            throw new IllegalArgumentException("Invalid credentials or token exchange failed");
+        }
+
+        // Trả về token
+        return tokenResponse.getAccessToken();
+    }
+
+
+//    public ProfileResponse getProfileById(String profileId) {
+//        // Tìm Profile từ repository dựa trên profileId
+//        Profile profile = profileRepository.findById(profileId)
+//                .orElseThrow(() -> new IllegalArgumentException("Profile not found for ID: " + profileId));
+//
+//        // Sử dụng ProfileMapper để chuyển đổi từ entity sang DTO
+//        return profileMapper.toProfileResponse(profile);
+//    }
+//
+//    public String getProfileIdByUsername(String username) {
+//        // Lấy profileId theo username
+//        return profileRepository.findProfileIdByUsername(username);
+//    }
+
+
+    public ProfileResponse getProfileByUsername(String username) {
+        // Step 1: Retrieve profileId by username
+        String profileId = profileRepository.findProfileIdByUsername(username);
+
+        if (profileId == null) {
+            throw new IllegalArgumentException("Profile not found for username: " + username);
+        }
+
+        // Step 2: Retrieve the full profile using the profileId
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new IllegalArgumentException("Profile not found for ID: " + profileId));
+
+        // Step 3: Convert the profile entity to DTO using ProfileMapper
+        return profileMapper.toProfileResponse(profile);
+    }
+
+//    ExternalAuthService externalAuthService; // Service to handle external user federation.
+//    JwtTokenProvider jwtTokenProvider;
+//
+//    public String loginWithRemoteFederation(String username, String password) {
+//        boolean isAuthenticated = externalAuthService.authenticate(username, password);
+//        if (!isAuthenticated) {
+//            throw new IllegalArgumentException("Invalid credentials for external user federation");
+//        }
+//
+//        Profile externalProfile = externalAuthService.fetchUserProfile(username);
+//        Profile localProfile = profileRepository.findByUsername(username).orElseGet(Profile::new);
+//        localProfile.setUsername(externalProfile.getUsername());
+//        localProfile.setEmail(externalProfile.getEmail());
+//        localProfile.setFirstName(externalProfile.getFirstName());
+//        localProfile.setLastName(externalProfile.getLastName());
+//        localProfile.setDob(externalProfile.getDob());
+//        profileRepository.save(localProfile);
+//
+//        return jwtTokenProvider.generateToken(localProfile);
+//    }
+
 }

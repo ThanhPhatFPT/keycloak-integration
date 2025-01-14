@@ -2,6 +2,7 @@ package com.devteria.profile.dto.request;
 
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,6 +26,7 @@ public class RegistrationRequest {
     @Size(min = 6, message = "INVALID_PASSWORD")
     String password;
 
+    @Email(message = "INVALID_EMAIL")
     String email;
     String firstName;
     String lastName;

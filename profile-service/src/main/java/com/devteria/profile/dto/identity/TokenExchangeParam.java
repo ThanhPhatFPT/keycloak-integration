@@ -16,5 +16,7 @@ public class TokenExchangeParam {
     String grant_type;
     String client_id;
     String client_secret;
+    private String username;  // Thêm trường username
+    private String password;  // Thêm trường password
     String scope;
 }

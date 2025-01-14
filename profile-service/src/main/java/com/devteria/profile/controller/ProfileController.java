@@ -2,12 +2,12 @@ package com.devteria.profile.controller;
 
 import java.util.List;
 
+import com.devteria.profile.dto.request.LoginRequest;
+import com.devteria.profile.dto.response.LoginResponse;
+import com.devteria.profile.entity.Profile;
 import jakarta.validation.Valid;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.devteria.profile.dto.ApiResponse;
 import com.devteria.profile.dto.request.RegistrationRequest;
@@ -39,4 +39,72 @@ public class ProfileController {
                 .result(profileService.getAllProfiles())
                 .build();
     }
+
+//    @GetMapping("/profiles/{profileId}")
+//    public ApiResponse<ProfileResponse> getProfileById(@PathVariable String profileId) {
+//        // Lấy thông tin người dùng từ ProfileService
+//        ProfileResponse profileResponse = profileService.getProfileById(profileId);
+//
+//        // Trả về thông tin người dùng dưới dạng ApiResponse
+//        return ApiResponse.<ProfileResponse>builder()
+//                .result(profileResponse)
+//                .build();
+//    }
+
+
+
+    @PostMapping("/login")
+    public ApiResponse<String> login(@RequestBody LoginRequest loginRequest) {
+        // Xác thực người dùng và lấy token
+        String token = profileService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
+
+        // Trả về token
+        return ApiResponse.<String>builder().result(token).build();
+    }
+
+
+//    @PostMapping("/remote-login")
+//    public ApiResponse<String> loginWithRemoteFederation(@RequestBody @Valid LoginRequest loginRequest) {
+//        try {
+//            // Authenticate user via Remote User Federation and generate token
+//            String token = profileService.loginWithRemoteFederation(loginRequest.getUsername(), loginRequest.getPassword());
+//
+//            // Return the token as part of the response
+//            return ApiResponse.<String>builder()
+//                    .result(token)
+//                    .message("Login successful")
+//                    .build();
+//        } catch (Exception e) {
+//            // Handle errors (invalid credentials, external system error, etc.)
+//            return ApiResponse.<String>builder()
+//                    .message(e.getMessage())
+//                    .build();
+//        }
+//    }
+
+
+    @GetMapping("/username/{username}")
+    public ApiResponse<ProfileResponse> getProfileByUsername(@PathVariable String username) {
+        try {
+            // Get profile information based on the username
+            ProfileResponse profileResponse = profileService.getProfileByUsername(username);
+
+            // Return profile data wrapped in ApiResponse
+            return ApiResponse.<ProfileResponse>builder()
+                    .result(profileResponse)
+                    .message("Profile fetched successfully")
+                    .build();
+        } catch (Exception e) {
+            // Handle error (user not found, profile not found, etc.)
+            return ApiResponse.<ProfileResponse>builder()
+                    .message(e.getMessage())
+                    .build();
+        }
+    }
+
+
+
+
+
+
 }

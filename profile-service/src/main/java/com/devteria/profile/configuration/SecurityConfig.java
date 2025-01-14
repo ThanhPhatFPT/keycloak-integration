@@ -10,21 +10,25 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+
 public class SecurityConfig {
-    private final String[] PUBLIC_ENDPOINTS = {"/register"};
+    private final String[] PUBLIC_ENDPOINTS = {"/login", "/register","profiles"}; // Thêm /login vào danh sách endpoint công khai
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(PUBLIC_ENDPOINTS)
-                .permitAll()
-                .anyRequest()
-                .authenticated());
+        // Cho phép tất cả người dùng truy cập /login và /register mà không cần xác thực
+        httpSecurity.authorizeHttpRequests(request -> request
+                .requestMatchers(PUBLIC_ENDPOINTS).permitAll() // Cho phép truy cập miễn phí vào /login và /register
+                .anyRequest().authenticated()); // Các yêu cầu khác sẽ yêu cầu xác thực
 
+        // Cấu hình OAuth2 Resource Server với JWT
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())
-                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())); // Cấu hình EntryPoint cho JWT
 
+        // Tắt CSRF nếu ứng dụng là API hoặc không yêu cầu bảo vệ CSRF
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
         return httpSecurity.build();
     }
 }
+
